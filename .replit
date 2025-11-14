@@ -1,6 +1,32 @@
 modules = ["web"]
+
 [agent]
 expertMode = true
 
 [nix]
 channel = "stable-25_05"
+
+[workflows.serve]
+type = "run"
+name = "Serve HTML Site"
+run = "python3 -m http.server 8080 --directory ."
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+modules = ["web"]
+
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[workflows.serve]
+type = "run"
+name = "Serve HTML Site"
+run = "python3 -m http.server 8080 --directory ."
+
+[[ports]]
+localPort = 8080
+externalPort = 80
