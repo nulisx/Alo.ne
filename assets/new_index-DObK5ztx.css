@@ -1,0 +1,441 @@
+/* alo-mod.css — Advanced modified CSS for alo.ne
+   - Mobile-first
+   - CSS variables for easy theming
+   - Accessible focus states and reduced-motion support
+   - Component styles: topbar, sidebar, dashboard grid, cards, forms, tables, modals, toasts
+   - Drop-in: import after existing CSS to override
+*/
+
+/* ========== :root theme variables ========== */
+:root {
+  /* Color palette (semantic) */
+  --bg: #0f1724;               /* deep navy background (dark mode default) */
+  --bg-elev: #111827;          /* elevated surfaces */
+  --panel: #0b1220;
+  --muted: #94a3b8;            /* muted text */
+  --text: #e6eef8;             /* primary text */
+  --accent: #6ee7b7;           /* greenish accent */
+  --accent-2: #60a5fa;         /* blue accent */
+  --danger: #fb7185;
+  --glass: rgba(255,255,255,0.03);
+
+  /* Borders, shadows */
+  --border: rgba(255,255,255,0.06);
+  --soft-shadow: 0 6px 20px rgba(2,6,23,0.6);
+  --sharp-shadow: 0 8px 30px rgba(2,6,23,0.8);
+
+  /* Spacing scale */
+  --pad-xs: 6px;
+  --pad-sm: 10px;
+  --pad-md: 16px;
+  --pad-lg: 24px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial;
+  --text-sm: 0.9rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --lead: 1.25rem;
+
+  /* Layout */
+  --sidebar-w: 72px;
+  --sidebar-w-expanded: 260px;
+  --content-max: 1180px;
+  --transition: 220ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* Light mode (opt-in by adding .alo-light on html or body) */
+.alo-light,
+.alo-light :root {
+  --bg: #f8fafc;
+  --bg-elev: #ffffff;
+  --panel: #ffffff;
+  --muted: #556677;
+  --text: #0b1220;
+  --accent: #0bce78;
+  --accent-2: #2563eb;
+  --border: rgba(11,18,32,0.06);
+  --glass: rgba(11,18,32,0.04);
+  --soft-shadow: 0 6px 24px rgba(15,20,32,0.06);
+  --sharp-shadow: 0 12px 36px rgba(15,20,32,0.08);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root { --transition: 1ms linear; }
+  * { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+}
+
+/* ========== Base / Utility ========== */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  min-height: 100%;
+  background: linear-gradient(180deg, var(--bg) 0%, rgba(0,0,0,0.02) 100%);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.35;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Root wrapper (optional) */
+.alo-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Link styles */
+a { color: var(--accent-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Heads and small utilities */
+.h1 { font-size: 1.375rem; font-weight: 700; margin: 0; }
+.h2 { font-size: 1.125rem; font-weight: 600; margin: 0; }
+.lead { font-size: var(--lead); color: var(--muted); }
+
+/* Buttons — primary/ghost/outline */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.6ch;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  color: var(--text);
+  font-weight: 600;
+  font-size: var(--text-md);
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+  box-shadow: none;
+  user-select: none;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 85%, transparent 15%), var(--accent));
+  color: #042018;
+  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(10,40,30,0.18);
+}
+.btn-primary:hover { transform: translateY(-2px); filter: brightness(1.03); }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-danger { background: var(--danger); color: white; border-color: transparent; }
+
+/* Icon button */
+.icon-btn {
+  width: 40px; height: 40px; padding: 0;
+  display:inline-grid; place-items:center; border-radius: 10px;
+  background: transparent; border: 1px solid transparent;
+}
+.icon-btn:focus { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+
+/* Utilities */
+.row { display:flex; gap: var(--pad-md); align-items:center; }
+.col { display:flex; flex-direction:column; gap: var(--pad-sm); }
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--pad-md);
+}
+
+/* Small helpers */
+.center { display:flex; align-items:center; justify-content:center; }
+.muted { color: var(--muted); font-size: 0.95rem; }
+
+/* ========== Layout: Topbar + Sidebar + Content ========== */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: 64px 1fr;
+  grid-template-areas:
+    "sidebar topbar"
+    "sidebar main";
+  min-height: 100vh;
+  transition: grid-template-columns var(--transition);
+}
+
+/* Expanded sidebar (toggle adding class .sidebar-open on .app-shell) */
+.app-shell.sidebar-open {
+  grid-template-columns: var(--sidebar-w-expanded) 1fr;
+}
+
+/* Topbar */
+.topbar {
+  grid-area: topbar;
+  height: 64px;
+  display:flex;
+  align-items:center;
+  gap: var(--pad-md);
+  padding: 0 var(--pad-md);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  backdrop-filter: blur(6px);
+  z-index: 40;
+}
+.topbar .brand {
+  display:flex; gap: 12px; align-items:center;
+}
+.topbar .brand .logo {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  display:inline-grid; place-items:center; font-weight:700; color:#fff;
+}
+.topbar .search {
+  flex: 1;
+  max-width: 560px;
+}
+.topbar .controls { display:flex; gap: 8px; align-items:center; }
+
+/* Sidebar */
+.sidebar {
+  grid-area: sidebar;
+  padding: 16px 12px;
+  border-right: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  display:flex; flex-direction:column; gap: 12px;
+  align-items: stretch;
+  min-height: calc(100vh - 64px);
+  position: sticky; top: 64px;
+}
+.sidebar .nav {
+  display:flex; flex-direction:column; gap: 6px;
+}
+.sidebar .nav a {
+  display:flex; gap: 12px; align-items:center; padding: 10px;
+  border-radius: 10px; color: var(--muted); font-weight: 600;
+}
+.sidebar .nav a:hover { background: var(--glass); color: var(--text); }
+.sidebar .nav a.active { background: linear-gradient(90deg, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent); color: var(--text); }
+
+/* Main content area */
+.main {
+  grid-area: main;
+  padding: var(--pad-lg) var(--pad-md);
+  overflow-x: hidden;
+  background: transparent;
+  min-height: calc(100vh - 64px);
+}
+
+/* Dashboard grid */
+.dashboard-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr 360px; align-items: start; }
+}
+@media (min-width: 1280px) {
+  .dashboard-grid { grid-template-columns: 1fr 360px; }
+}
+
+/* ========== Cards ========== */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--soft-shadow);
+}
+.card-header {
+  display:flex; justify-content:space-between; align-items:center; gap: 12px;
+  margin-bottom: 10px;
+}
+.card-title { font-size: 1rem; font-weight: 700; }
+.card-sub { color: var(--muted); font-size: 0.95rem; }
+
+/* Statistic card small */
+.stat {
+  display:flex; gap: 12px; align-items:center;
+}
+.stat .value { font-size: 1.5rem; font-weight: 700; }
+.stat .delta { color: var(--muted); font-size: 0.9rem; }
+
+/* ========== Forms & Inputs ========== */
+.form-row { display:flex; gap: 12px; flex-wrap:wrap; }
+.input, textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  color: var(--text);
+  font-size: var(--text-md);
+  transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+  outline: none;
+}
+.input:focus, textarea:focus, select:focus {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--accent-2) 40%);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--accent-2) 10%, transparent);
+  transform: translateY(-1px);
+}
+.input[aria-invalid="true"] {
+  border-color: var(--danger); box-shadow: 0 6px 18px rgba(251,113,133,0.06);
+}
+
+/* Labels */
+.field { display:flex; flex-direction:column; gap: 8px; }
+.label { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+
+/* Inline form helpers */
+.field-help { font-size: 0.85rem; color: var(--muted); }
+
+/* Toggle & switches */
+.switch {
+  width: 44px; height: 26px; border-radius: 999px; position: relative;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border); cursor: pointer;
+}
+.switch .knob { position:absolute; left: 4px; top: 4px; width: 18px; height: 18px; border-radius: 50%;
+  background: white; transition: left var(--transition); box-shadow: var(--soft-shadow);
+}
+.switch[aria-checked="true"] { background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+.switch[aria-checked="true"] .knob { left: 22px; background: #042018; }
+
+/* ========== Tables ========== */
+.table {
+  width: 100%; border-collapse: collapse; overflow: hidden;
+  border-radius: 10px; border: 1px solid var(--border);
+}
+.table th, .table td {
+  padding: 12px 14px; text-align: left;
+  border-bottom: 1px dashed rgba(255,255,255,0.02);
+}
+.table thead th {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  font-weight: 700; color: var(--muted); font-size: 0.95rem;
+}
+.table tbody tr:hover { background: linear-gradient(90deg, rgba(255,255,255,0.01), transparent); }
+
+/* Compact table for mobile */
+@media (max-width: 700px) {
+  .table thead { display: none; }
+  .table tbody tr { display: grid; grid-template-columns: 1fr; padding: 8px; gap: 8px; }
+  .table tbody td { display: block; padding: 6px 0; border-bottom: none; }
+}
+
+/* ========== Badges & Pills ========== */
+.badge {
+  display:inline-flex; align-items:center; gap: 8px; padding: 6px 10px;
+  border-radius: 999px; background: rgba(255,255,255,0.02); color: var(--muted); font-weight:700;
+}
+.badge.success { color: var(--accent); background: linear-gradient(180deg, rgba(110,231,183,0.06), rgba(110,231,183,0.03)); }
+.badge.warn { color: #f59e0b; }
+
+/* ========== Avatars ========== */
+.avatar {
+  width: 36px; height: 36px; border-radius: 10px; display:inline-grid; place-items:center;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: white; font-weight:700;
+}
+
+/* ========== Modal ========== */
+.modal-backdrop {
+  position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
+  background: rgba(2,6,23,0.6); z-index: 80; padding: 24px;
+}
+.modal {
+  width: 100%; max-width: 760px; border-radius: 14px; padding: 18px;
+  background: var(--panel); box-shadow: var(--sharp-shadow); border: 1px solid var(--border);
+}
+
+/* ========== Toasts ========== */
+.toasts {
+  position: fixed; right: 20px; bottom: 20px; display:flex; flex-direction:column; gap: 10px; z-index: 100;
+}
+.toast {
+  min-width: 260px; max-width: 420px; padding: 12px 14px; border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+  border: 1px solid var(--border); box-shadow: var(--soft-shadow);
+  display:flex; gap: 10px; align-items:center;
+}
+
+/* ========== Dropdowns / Popovers ========== */
+.popover {
+  background: var(--panel); border-radius: 10px; padding: 8px;
+  border: 1px solid var(--border); box-shadow: var(--sharp-shadow);
+  min-width: 220px;
+}
+
+/* ========== Empty / Placeholder states ========== */
+.empty {
+  display:flex; flex-direction:column; gap: 12px; align-items:center; justify-content:center;
+  padding: 28px; text-align:center; color: var(--muted);
+}
+.empty .emoji { font-size: 2rem; }
+
+/* ========== Small screens adjustments ========== */
+@media (max-width: 880px) {
+  .app-shell { grid-template-columns: 1fr; grid-template-rows: 64px 1fr; grid-template-areas: "topbar" "main"; }
+  .sidebar { display:none; }
+  .topbar .brand .logo { width: 30px; height:30px; }
+}
+
+/* ========== Accessibility ========== */
+/* Strong focus ring for keyboard users */
+:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 8px;
+}
+/* High contrast mode adjustments */
+@media (prefers-contrast: more) {
+  :root { --border: rgba(255,255,255,0.14); }
+  .btn-primary { filter: saturate(1.1) brightness(1.05); }
+}
+
+/* ========== Small, opinionated UI patterns for 'bio-link' style pages ========== */
+/* Hero / profile card */
+.hero {
+  display:flex; gap: 16px; align-items:center; padding: 18px; border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+  border: 1px solid var(--border);
+}
+.hero .bio {
+  display:flex; flex-direction:column; gap: 6px;
+}
+.hero .name { font-size: 1.25rem; font-weight: 800; }
+.hero .meta { color: var(--muted); font-size: 0.95rem; }
+
+/* Buttons list (common in biolink) */
+.link-list {
+  display:grid; gap: 12px;
+  margin-top: 12px;
+}
+.link-list .link-item {
+  padding: 14px; border-radius: 12px; background: linear-gradient(90deg, rgba(255,255,255,0.01), transparent);
+  border: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center;
+}
+.link-list .link-item .title { font-weight:700; }
+
+/* ========== Micro interactions ========== */
+.fade-in {
+  animation: fadeIn var(--transition) ease both;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none; } }
+
+/* ========== Override suggestions for integration (explicit) ========== */
+/* If the original site uses very specific utility classes, add this hook to force our variables & resets */
+.alo-app * { transition-timing-function: cubic-bezier(.2,.9,.3,1); }
+
+/* A couple of small override helpers you can toggle in JS */
+.alo-compact .card { padding: 12px; border-radius: 10px; }
+.alo-large-typography { font-size: 18px; --text-md: 1.06rem; }
+
+/* End of alo-mod.css */
