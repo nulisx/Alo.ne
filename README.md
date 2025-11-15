@@ -30,6 +30,7 @@ Alo.ne is a luxury privacy-based service platform that provides users with perso
 ├── bio/             # Bio link service pages
 ├── bio-socials/     # Social links management
 ├── dash/            # Dashboard pages
+├── dashfiles/            # Dashboard files
 ├── file/            # File hosting service
 ├── imap/            # Email IMAP service
 ├── login/           # Login pages
